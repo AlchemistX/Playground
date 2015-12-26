@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Based on cairo-demo/X11/cairo-demo.c
 """
@@ -18,12 +18,14 @@ def triangle(ctx):
     ctx.rel_line_to(-2 * SIZE, 0)
     ctx.close_path()
 
+
 def square(ctx):
     ctx.move_to(0, 0)
     ctx.rel_line_to(2 * SIZE, 0)
     ctx.rel_line_to(0, 2 * SIZE)
     ctx.rel_line_to(-2 * SIZE, 0)
     ctx.close_path()
+
 
 def bowtie(ctx):
     ctx.move_to(0, 0)
@@ -40,6 +42,7 @@ def inf(ctx):
     ctx.rel_curve_to(0, SIZE, -SIZE, SIZE, - 2 * SIZE, 0)
     ctx.rel_curve_to(-SIZE, -SIZE, - 2 * SIZE, -SIZE, - 2 * SIZE, 0)
     ctx.close_path()
+
 
 def draw_shapes(ctx, x, y, fill):
     ctx.save()
@@ -78,11 +81,14 @@ def draw_shapes(ctx, x, y, fill):
 
     ctx.restore()
 
+
 def fill_shapes(ctx, x, y):
     draw_shapes(ctx, x, y, True)
 
+
 def stroke_shapes(ctx, x, y):
     draw_shapes(ctx, x, y, False)
+
 
 def draw(da, ctx):
     ctx.set_source_rgb(0, 0, 0)
