@@ -29,10 +29,16 @@
 
 ;; Exercise 1.3
 ;; Define a procedure that takes three numbers as arguments and returns the sum of the squares of the two larger numbers.
+(define (min a b c)
+  (if (< a b)
+      (if (< a c) a c)
+      (if (< b c) b c)))
+(define (square a)
+  (* a a))
 (define (sum-of-squares a b c)
-  (cond ((and (> a b) (> b c)) (+ (* a a) (* b b)))
-        ((and (> b c) (> c a)) (+ (* b b) (* c c)))
-        ((and (> c a) (> a b)) (+ (* c c) (* a a)))))
+  (- (+ (square a) (square b) (square c)) (square (min a b c))))
+
 (sum-of-squares 3 2 1)
 (sum-of-squares 1 3 2)
 (sum-of-squares 3 1 2)
+
