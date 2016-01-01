@@ -28,7 +28,8 @@
 (/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7)))
 
 ;; Exercise 1.3
-;; Define a procedure that takes three numbers as arguments and returns the sum of the squares of the two larger numbers.
+;; Define a procedure that takes three numbers as arguments and
+;; returns the sum of the squares of the two larger numbers.
 (define (min a b c)
   (if (< a b)
       (if (< a c) a c)
@@ -42,3 +43,66 @@
 (sum-of-squares 1 3 2)
 (sum-of-squares 3 1 2)
 
+;; Exercise 1.4
+;; Observe that our model of evaluation allows for combinations
+;; whose operators are compound expressions. Use this observation
+;; to describe the behavior of the following procedure:
+;;
+;; (define (a-plus-abs-b a b)
+;;  ((if (> b 0) + -) a b))
+;;
+;; [Solution]
+;; The expression (if (> b 0) + -) is a operator of the combination and
+;; it should be reduced to + or - which depends on the value of b.
+;; After reducing has done the combination changes to (+ a b) or (- a b)
+;; For example,
+;; (a-plus-abs-b 10 -10) is evaluated as follows:
+;; ((if (> -10 0) + -) 10 -10)
+;; ((if (#f) + -) 10 -10)
+;; (- 10 -10)
+;; 20
+(define (a-plus-abs-b a b)
+  ((if (> b 0) + -) a b))
+
+(= (a-plus-abs-b 10 -10) (- 10 -10)) ;; Should be #t
+(= (a-plus-abs-b 10 10) (+ 10 10)) ;; Shuld be #t
+
+;; Exercise 1.5
+;; Ben Bitdiddle has invented a test to determine whether the interpreter
+;; he is faced with is using applicative-order evaluation or normal-order
+;; evaluation. He defines the following two procedures:
+;;
+(define (p) (p))
+(define (test x y)
+  (if (= x 0)
+      0
+      y))
+;;Then he evaluates the expression
+;; (test 0 (p))
+;; What behavior will Ben observe with an interpreter that uses applicative-order evaluation?
+;; What behavior will he observe with an interpreter that uses normal-order evaluation?
+;; Explain your answer.
+;; (Assume that the evaluation rule for the special form if is the same whether
+;; the interpreter is using normal or applicative order: The predicate expression
+;; is evaluated first, and the result determines whether to evaluate the consequent
+;; or the alternative expression.)
+;;
+;; [Solution]
+;; In applicative-order evaluation is evauating the arguments first.
+;; So, the interpreter is substitutes (p) as (p) and substituting againg (p) as (p) infinitely.
+;;
+;; (test 0 (p))
+;; (test 0 (p))
+;; (test 0 (p))
+;; (test 0 (p))
+;;     .
+;;     .
+;;     .
+;;
+;; In normal-order evaluation defers for substituting arguments when remains the combination
+;; consists of premitive operations. So, the combination is expended as follows:
+;;
+;; (if (= x 0) 0 (p)
+;; (if (#t) 0 (p))
+;; 0
+;;
