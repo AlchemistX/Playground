@@ -106,3 +106,53 @@
 ;; (if (#t) 0 (p))
 ;; 0
 ;;
+
+;; Newton's method
+(define (sqrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x)
+                 x)))
+(define (improve guess x)
+  (average guess (/ x guess)))
+(define (average x y)
+  (/ (+ x y) 2))
+(define (good-enough? guess x)
+  (< (abs (- (square guess) x)) 0.001))
+(define (sqrt x)
+  (sqrt-iter 1.0 x))
+
+(sqrt 9)
+(sqrt (+ 100 37))
+(sqrt (+ (sqrt 2) (sqrt 3)))
+(square (sqrt 1000))
+
+
+;; Exercise 1.6
+;; Alyssa P. Hacker doesn't see why if needs to be provided as a special form.
+;; "Why can't I just define it as an ordinary procedure in terms of cond?" she asks.
+;; Alyssa's friend Eva Lu Ator claims this can indeed be done, and she defines a new version of if:
+(define (new-if predicate then-clause else-clause)
+  (cond (predicate then-clause)
+        (else else-clause)))
+;;Eva demonstrates the program for Alyssa:
+(new-if (= 2 3) 0 5) ; 5
+(new-if (= 1 1) 0 5) ; 0
+(define (sqrt-iter-new-if guess x)
+  (new-if (good-enough? guess x)
+          guess
+          (sqrt-iter-new-if (improve guess x)
+                     x)))
+(define (sqrt-new-if x)
+  (sqrt-iter-new-if 1.0 x))
+
+;;(sqrt-new-if 9)
+;;(sqrt-new-if (+ 100 37))
+;;(sqrt-new-if (+ (sqrt-new-if 2) (sqrt-new-if 3)))
+;;(square (sqrt-new-if 1000))
+;;
+;; [Solution]
+;; Different from if as special form the new-if is evaluated as applicative-order.
+;; So, the interpreter evaluates all arguments of new-if such as evaluating predicate, then-caluse, else-clause.
+;; The else-clause of sqrt-iter-new-if is expended sqrt-iter-new-if infinitely.
+
