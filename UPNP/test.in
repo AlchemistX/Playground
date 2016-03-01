@@ -1,1 +1,11 @@
-msearch service MediaServer
+set timeout 1
+msearch
+pcap
+host get 1
+host send 1 MediaServer ContentDirectory Browse
+0
+BrowseDirectChildren
+*
+0
+0
+0
