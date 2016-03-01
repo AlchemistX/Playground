@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 class Tree:
     def __init__(self, data, left_child = None, right_child = None):
         self.data = data

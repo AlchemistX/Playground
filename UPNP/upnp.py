@@ -9,6 +9,7 @@ from socket import  socket,             \
                     IPPROTO_IP,         \
                     IPPROTO_UDP,        \
                     IP_MULTICAST_TTL,   \
+                    IP_ADD_MEMBERSHIP,  \
                     SOL_SOCKET,         \
                     SO_REUSEADDR
 
