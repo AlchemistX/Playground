@@ -1,7 +1,7 @@
 GUPNP=gupnp
 SSDP_BROWSER=ssdp_browser
 CFLAGS=`pkg-config --cflags gupnp-1.0`
-LIBS=`pkg-config --libs gupnp-1.0`
+LIBS=`pkg-config --libs glib-2.0 gobject-2.0 gio-2.0 gssdp-1.0 gupnp-1.0`
 GUPNP_SRCS=gupnp.c
 GUPNP_OBJS=gupnp.o
 SSDP_BROWSER_SRCS=ssdp_browser.c
