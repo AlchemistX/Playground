@@ -9,6 +9,7 @@ device_proxy_available_cb (GUPnPControlPoint *cp,
 {
   GUPnPServiceProxy *cd = GUPNP_SERVICE_PROXY(gupnp_device_info_get_service(GUPNP_DEVICE_INFO(proxy), "urn:schemas-upnp-org:service:ContentDirectory"));
 
+  g_print("==============================\n");
   g_print("Name : %s\n", gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO(proxy)));
   g_print("Location : %s\n", gupnp_service_info_get_location(GUPNP_SERVICE_INFO(cd)));
   g_print("udn : %s\n", gupnp_service_info_get_udn(GUPNP_SERVICE_INFO(cd)));
@@ -95,7 +96,7 @@ device_proxy_available_cb (GUPnPControlPoint *cp,
   g_print ("\tTotalMatches:   %u\n", total);
 
   g_free (result);
-  g_main_loop_quit(main_loop);
+  //g_main_loop_quit(main_loop);
 }
 
 int

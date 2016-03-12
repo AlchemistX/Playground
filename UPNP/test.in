@@ -1,8 +1,7 @@
 set timeout 1
 msearch
-pcap
-host get 1
-host send 1 MediaServer ContentDirectory Browse
+host get 2 
+host send 2 MediaServer ContentDirectory Browse
 0
 BrowseDirectChildren
 *

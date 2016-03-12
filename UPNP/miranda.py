@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 ################################
 # Interactive UPNP application #
 # Craig Heffner                #
