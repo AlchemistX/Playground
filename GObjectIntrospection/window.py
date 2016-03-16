@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import gi
@@ -13,7 +13,7 @@ class Application:
         win.set_default_size(300, 200)
         win.set_position(Gtk.WindowPosition.CENTER)
 
-        btn = Gtk.Button("Hit ME!")
+        btn = Gtk.Button(label="Hit ME!")
         btn.connect_after("clicked", self.btn_clicked)
 
         win.add(btn)
@@ -28,7 +28,7 @@ class Application:
         print("OK")
 
 def main():
-    app = Application()
+    Application()
     Gtk.main()
 
 if __name__ == '__main__':

@@ -1,13 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os
 import sys
 import gi
 gi.require_version('Gst', '1.0')
-from gi.repository import Gst, GObject, Gtk
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gst, Gtk
 
 class GTK_Main(object):
     def __init__(self):
-        window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+        window = Gtk.Window(type=Gtk.WindowType.TOPLEVEL)
         window.set_title("Audio-Player")
         window.set_default_size(300, -1)
         window.connect("destroy", Gtk.main_quit, "WM destroy")
@@ -15,7 +16,7 @@ class GTK_Main(object):
         window.add(vbox)
         self.entry = Gtk.Entry()
         vbox.pack_start(self.entry, False, True, 0)
-        self.button = Gtk.Button("Start")
+        self.button = Gtk.Button(label="Start")
         self.button.connect("clicked", self.start_stop)
         vbox.add(self.button)
         window.show_all()
@@ -54,5 +55,4 @@ class GTK_Main(object):
 if __name__ == "__main__":
     Gst.init(sys.argv)
     GTK_Main()
-    GObject.threads_init()
     Gtk.main()
