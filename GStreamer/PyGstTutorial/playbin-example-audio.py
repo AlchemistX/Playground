@@ -36,6 +36,11 @@ class GTK_Main(object):
                 self.button.set_label("Stop")
                 self.player.set_property("uri", "file://" + filepath)
                 self.player.set_state(Gst.State.PLAYING)
+            else:
+                self.button.set_label("Stop")
+                self.player.set_property("uri", filepath)
+                self.player.set_state(Gst.State.PLAYING)
+
         else:
             self.player.set_state(Gst.State.NULL)
             self.button.set_label("Start")
