@@ -86,7 +86,7 @@ def main():
     loop = GLib.MainLoop.new(None, False)
     fin = UPnP_Finder(loop, "SALMON")
     loop.run()
-    print("===================================TEST CONTENTS===================================")
+    print("="*40, "TEST CONTENTS", "="*40)
     print(fin)
 
 if __name__ == "__main__":

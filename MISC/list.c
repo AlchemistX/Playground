@@ -14,7 +14,7 @@ void print_list( LIST *l )
   }
 }
 
-LIST *append( LIST *l, int i)
+LIST* append( LIST *l, int i)
 {
   LIST *new = NULL;
   LIST *end = NULL;
@@ -37,7 +37,7 @@ LIST *append( LIST *l, int i)
   return ret;
 }
 
-LIST *delete( LIST *l, int i )
+LIST* delete( LIST *l, int i )
 {
   if (l == NULL)
     return NULL;
@@ -50,7 +50,7 @@ LIST *delete( LIST *l, int i )
   return l;
 }
 
-LIST *move( LIST *l )
+LIST* move( LIST *l )
 {
   LIST *n = NULL;
   LIST *p = NULL;
@@ -68,7 +68,7 @@ LIST *move( LIST *l )
   return ret;
 }
 
-LIST *sort( LIST *l )
+LIST* sort( LIST *l )
 {
   if (l == NULL) return NULL;
   l->next = sort(l->next);

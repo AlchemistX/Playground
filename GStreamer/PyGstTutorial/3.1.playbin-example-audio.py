@@ -22,8 +22,8 @@ class GTK_Main(object):
         window.show_all()
 
         self.player = Gst.ElementFactory.make("playbin", "player")
-        #fakesink = Gst.ElementFactory.make("fakesink", "fakesink")
-        #self.player.set_property("video-sink", fakesink)
+        fakesink = Gst.ElementFactory.make("fakesink", "fakesink")
+        self.player.set_property("video-sink", fakesink)
         bus = self.player.get_bus()
         bus.add_signal_watch()
         bus.connect("message", self.on_message)
@@ -55,7 +55,6 @@ class GTK_Main(object):
             err, debug = message.parse_error()
             print (("Error: %s"%(err, debug)))
             self.button.set_label("Start")
-        print(message)
 
 if __name__ == "__main__":
     Gst.init(sys.argv)
