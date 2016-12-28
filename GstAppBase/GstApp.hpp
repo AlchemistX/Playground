@@ -1,10 +1,13 @@
 #pragma once
-#include "GstAppBase.hpp"
+#include "GstPipelineBase.hpp"
 
-class GstApp : public GstAppBase {
+class GstApp : public GstPipelineBase {
 public:
-  GstApp(void) {}
-  virtual ~GstApp(void) {}
+  GstApp(GMainLoop *pMainLoop);
+  virtual ~GstApp(void);
 public:
-  virtual gboolean handleBusMessage (GstBus *pBus, GstMessage *pMessage);
+  virtual gboolean message_eos (GstMessage *pMessage);
+  virtual gboolean message_error (GstMessage *pMessage);
+private:
+  GMainLoop *pMainLoop_;
 };

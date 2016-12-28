@@ -1,5 +1,5 @@
-TARGET=GstAppBase
-SRCS=main.cpp GstAppBase.cpp GstApp.cpp
+TARGET=GstApp
+SRCS=main.cpp GstPipelineMessageBase.cpp GstPipelineBase.cpp GstApp.cpp
 OBJS=$(SRCS:%cpp=%o)
 CFLAGS=$(shell pkg-config --cflags gstreamer-1.0) -g
 CXXFLAGS=$(CFLAGS)
