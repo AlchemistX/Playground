@@ -2,12 +2,13 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <vector>
+#include <set>
 #include <utility>
+#include <algorithm>
 using namespace std;
 
 using coord = pair<int, int>;
-using coords = vector<coord>;
+using coords = set<coord>;
 
 const int MAX = 500;
 coord delta[] = {coord(-1, 0), coord(0, -1), coord(1, 0), coord(0, 1)};
@@ -23,11 +24,36 @@ std::ostream& operator<<(std::ostream& os, const coord& c)
   return os;
 }
 
+bool check (coords &co, coord &dc)
+{
+  int cnt = 0;
+  for (auto d: delta) {
+    coord ddc = dc + d;
+    if (find(begin(co), end(co), ddc) != end(co)) {
+      cnt++;
+    }
+  }
+
+  return cnt > 1;
+}
+
 int advance(coords &co, coords &ad)
 {
-  for(auto c: ad)
-    cout << c << endl;
-  return 0;
+  coords n;
+  for (auto c: ad) {
+    for (auto d: delta) {
+      coord dc = c + d;
+      if (dc.first < 1   || dc.second < 1) continue;
+      if (dc.first > MAX || dc.second > MAX) continue;
+      if ((find(begin(co), end(co), dc) == end(co)) && (check (co, dc))) {
+        n.insert(dc);
+      }
+    }
+  }
+
+  co.insert(begin(n), end(n));
+  ad.swap(n);
+  return ad.size();
 }
 
 int count_tick(coords &co)
@@ -35,7 +61,7 @@ int count_tick(coords &co)
   int tick = 0;
   coords ad(co);
   while (advance(co, ad)) tick++;
-  return 0;
+  return tick;
 }
 
 int main (int argc, char ** argv)
@@ -61,11 +87,10 @@ int main (int argc, char ** argv)
       istringstream iss(line);
       string r, c;
       iss >> r >> c;
-      int R = stoi(r);
-      int C = stoi(c);
-      co.push_back(coord(R,C));
+      co.emplace(stoi(r), stoi(c));
     }
     out << count_tick(co) << endl;
+    cout << "." << endl;
   }
 
   return 0;

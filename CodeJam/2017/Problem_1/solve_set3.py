@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from multiprocessing import Process, Queue
 import sys
-MAX = 500
+MAX = 1000000000
 delta = [(-1, 0), (0, -1), (1, 0), (0, 1)]
 
 def check (c, x, y):
@@ -14,25 +14,24 @@ def check (c, x, y):
     return True if cnt > 1 else False
 
 def advance (c, a):
-    n = []
+    n = set()
     for x, y in a:
         for dx, dy in delta:
             cx, cy = x + dx, y + dy
             if (cx >= 1 and cx <= MAX) and (cy >= 1 and cy <= MAX):
                 if (cx, cy) not in c:
                     if check (c, cx, cy):
-                        n.append((cx, cy))
-    n = list(set(n))
+                        n.add((cx, cy))
     return n
 
 def runOneIteration(coord, idx, q):
     tick = 0
-    adv = list(coord)
+    adv = set(coord)
     while 1:
         adv = advance (coord, adv)
         if len(adv) == 0: break;
         tick = tick + 1
-        coord.extend(adv)
+        coord.update(adv)
     q.put({idx:tick})
 
 def main (fn):
@@ -45,11 +44,11 @@ def main (fn):
     outputs = [Queue()] * T
     coords = []
     for t in range(T):
-        coord = []
+        coord = set()
         for i in range(int(ifile.readline())):
             x, y = map(int, ifile.readline().split())
             if x <= MAX and y <= MAX:
-                coord.append((x, y))
+                coord.add((x, y))
         coords.append(coord)
 
     idx = 0
