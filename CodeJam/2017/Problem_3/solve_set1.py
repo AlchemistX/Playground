@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 from multiprocessing import Process, Queue
 import sys
-from itertools import combinations
+
+def sum_edges(G):
+    s = 0
+    for i in range(len(G) - 1):
+        s = s + (G[i+1] - G[i])
+    return s
 
 def solve(R, B, P):
-    r, b = 0, 0
-    if len(P) == 0:
-        for i in range(len(R) - 1):
-            r = r + (R[i+1] - R[i])
-        for i in range(len(B) - 1):
-            b = b + (B[i+1] - B[i])
-    else:
-        pass
-    return r + b 
+    return sum_edges(R) + sum_edges(B)
 
 def runOneIteration(R, B, P, idx, q):
     q.put({idx:solve(R, B, P)})
@@ -28,12 +25,9 @@ def main(fn):
     for t in range(T):
         L, M, N = map(int, ifile.readline().split())
         R, B, P = [], [], []
-        for i in range(L):
-            R.append(int(ifile.readline()))
-        for i in range(M):
-            B.append(int(ifile.readline()))
-        for i in range(N):
-            P.append(int(ifile.readline()))
+        for i in range(L): R.append(int(ifile.readline()))
+        for i in range(M): B.append(int(ifile.readline()))
+        for i in range(N): P.append(int(ifile.readline()))
         R.sort()
         B.sort()
         P.sort()
