@@ -14,8 +14,14 @@ def perimeter(pair):
     return 2*(a+b)
 
 def solve(points):
-    pairs = set([(ratio(x), x)  for x in combinations(points, 2)])
-    return perimeter(sorted(pairs)[0][1])
+    srat = 1.0
+    sper = 0
+    for p in combinations(points, 2):
+        rat = ratio(p)
+        if rat <= srat:
+            srat = rat
+            sper = perimeter(p)
+    return sper
 
 def runOneIteration(points, idx, q):
     q.put({idx:solve(points)})
@@ -27,16 +33,13 @@ def main(fn):
     T = int(ifile.readline())
 
     procs, inputs, outputs = [], [], [Queue()]*T
+    idx = 0
     for t in range(T):
-        points = set()
+        points = []
         for i in range(int(ifile.readline())):
             x, y = map(int, ifile.readline().split())
-            points.add((x, y))
-        inputs.append(points)
-
-    idx = 0
-    for i in inputs:
-        proc = Process(target=runOneIteration, args=(i, idx, outputs[idx]))
+            points.append((x, y))
+        proc = Process(target=runOneIteration, args=(points, idx, outputs[idx]))
         procs.append(proc)
         proc.start()
         idx = idx + 1
@@ -48,7 +51,7 @@ def main(fn):
     for o in outputs:
         out.update(o.get());
 
-    for k in out:
+    for k in range(T):
         ofile.write (str(out[k]) + "\n")
 
 if __name__ == "__main__":

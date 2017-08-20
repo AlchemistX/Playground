@@ -1,15 +1,21 @@
-#!/usr/bin/env pypy
+#!/usr/bin/env python
 from multiprocessing import Process, Queue
 import sys
-from itertools import combinations, izip
+from itertools import combinations
+from functools import reduce
 MIN = -1000000000
 MAX = 1000000000
 def ncr(n, r):
-    return reduce(lambda x, y: x * y[0] / y[1], izip(xrange(n - r + 1, n+1), xrange(1, r+1)), 1)
+    return reduce(lambda x, y: x * y[0] / y[1], zip(range(n - r + 1, n+1), range(1, r+1)), 1)
 
 def ratio(pair):
     a = float(abs(pair[0][0] - pair[1][0]))
     b = float(abs(pair[0][1] - pair[1][1]))
+    return a/b if b >= a else b/a
+
+def ratiox(aa, bb, cc, dd):
+    a = float(abs(aa - cc))
+    b = float(abs(bb - dd))
     return a/b if b >= a else b/a
 
 def perimeter(pair):
@@ -17,39 +23,55 @@ def perimeter(pair):
     b = abs(pair[0][1] - pair[1][1])
     return 2*(a+b)
 
+def perimeterx(aa, bb, cc, dd):
+    a = abs(aa - cc)
+    b = abs(bb - dd)
+    return 2*(a+b)
+
 def progress(c, rep):
     print((float(c)/float(rep))*100)
 
-def solve(points):
+def solve1(pointx, pointy):
     srat = 1.0
-    sper = perimeter(((MIN,MIN), (MAX,MAX)))
-    p, q, t, rep = 0, 1, len(points), ncr(len(points), 2)
-    print(len(points), rep)
-    for c in xrange(rep): # combinations(points.keys(), 2):
-        if (c % 100000000) == 0:
+    sper = perimeter(((MIN, MIN), (MAX, MAX)))
+    p, q, t, rep = 0, 1, len(pointx), ncr(len(pointy), 2)
+    for c in range(int(rep)):
+        if c != 0 and (c % 100000000) == 0:
             progress(c, rep)
-        pair = (points[p],points[q])
-        #rat = ratio(pair)
+        a = float(abs(pointx[p] - pointx[q]))
+        b = float(abs(pointy[p] - pointy[q]))
+        rat = a/b
+        if rat > 1:
+            rat = b/a
+        if rat <= srat:
+            srat = rat
+            a = abs(pointx[p] - pointx[q])
+            b = abs(pointy[p] - pointy[q])
+            sper = 2*(a+b)
         q = q + 1
         if q == t:
             p = p + 1
             q = p + 1
-        continue
-        if rat <= srat:
-            if rat == srat:
-                a = perimeter(pair)
-                if a < sper:
-                    srat = rat
-                    sper = a
-            else:
-                srat = rat
-                sper = perimeter(pair)
-
 
     return sper
 
-def runOneIteration(points, idx, q):
-    q.put({idx:solve(points)})
+def solve0(pointx, pointy):
+    srat = 1.0
+    sper = perimeter(((MIN, MIN), (MAX, MAX)))
+    rep = ncr(len(pointy), 2)
+    c = 0
+    for p in combinations(zip(pointx, pointy), 2):
+        if c != 0 and (c % 100000000) == 0:
+            progress(c, rep)
+        c = c + 1
+        rat = ratio(p)
+        if rat <= srat:
+            srat = rat
+            sper = perimeter(p)
+    return sper
+
+def runOneIteration(pointx, pointy, idx, q):
+    q.put({idx:solve1(pointx, pointy)})
 
 def main(fn):
     ifile = open(fn, "r")
@@ -57,32 +79,31 @@ def main(fn):
 
     T = int(ifile.readline())
 
-    procs, inputs, outputs = [], [], [Queue()]*T
+    procs, outputs = [], [Queue()]*T
+    idxp = 0
     for t in range(T):
-        points = []
+        pointx = []
+        pointy = []
         idx = 0
         for i in range(int(ifile.readline())):
             x, y = map(int, ifile.readline().split())
-            points.append((x, y))
+            pointx.append(x)
+            pointy.append(y)
             idx = idx + 1
-        inputs.append(points)
-
-    idx = 0
-    for i in inputs:
-        proc = Process(target=runOneIteration, args=(i, idx, outputs[idx]))
+        proc = Process(target=runOneIteration, args=(pointx, pointy, idxp, outputs[idxp]))
         procs.append(proc)
         proc.start()
-        idx = idx + 1
+        idxp = idxp + 1
 
     for p in procs:
         p.join()
 
     out = {}
     for o in outputs:
-        out.update(o.get());
+        out.update(o.get())
 
-    for k in out:
-        ofile.write (str(out[k]) + "\n")
+    for k in range(T):
+        ofile.write(str(out[k]) + "\n")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
