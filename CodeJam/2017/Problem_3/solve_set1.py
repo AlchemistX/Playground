@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 from multiprocessing import Process, Queue
 import sys
+from functools import reduce
 
-def sum_edges(G):
-    s = 0
-    for i in range(len(G) - 1):
-        s = s + (G[i+1] - G[i])
-    return s
+def sum_edges(A):
+    return sum(reduce(lambda x, y: (sum(x), sum(y)), zip(map(lambda x: -x, A), A[1:]), (0,)))
 
 def solve(R, B, P):
     return sum_edges(R) + sum_edges(B)

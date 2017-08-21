@@ -1,48 +1,45 @@
-#!/usr/bin/env python3
+#!/usr/bin/env pypy
 from multiprocessing import Process, Queue
 import sys
+from functools import reduce
 
-def sum_edges(G):
+def sum_edges(A):
+    return sum(reduce(lambda x, y: (sum(x), sum(y)), zip(map(lambda x: -x, A), A[1:]), (0,)))
+
+def sum_partial(A, func):
+    return sum(reduce(lambda x, y: (sum(x), sum(y)), zip(map(lambda x: -x, filter(func, A)), filter(func, A[1:])), (0,)))
+
+def sum_inner_partial(P, G):
     s = 0
-    for i in range(len(G) - 1):
-        s = s + (G[i+1] - G[i])
+    for i, j in zip(P, P[1:]):
+        largest = -1
+        priv = -1
+        for f in filter(lambda x : i < x and x < j, G):
+            if priv == -1:
+                priv = f
+                continue
+            v = f - priv
+            priv = f
+            largest = v if v > largest else largest
+            s = s + v
+        if priv != -1:
+            if largest == -1:
+                a = priv - i
+                b = j - priv
+                v = a if a < b else b
+            else:
+                v = j - priv
+                if v < largest:
+                    s = s - largest
+                    s = s + v
     return s
 
 def sum_partial_edges(P, G):
-    F = list(filter(lambda x : x <= P[0], G))
-    F.append(P[0])
-    s = sum_edges(F)
-
-    for i in range(len(P) - 1):
-        F = list(filter(lambda x : P[i] < x and x < P[i+1], G))
-        if len(F) == 0:
-            continue
-        elif len(F) == 1:
-            s = s + min(F[0] - P[i], P[i+1] - F[0])
-        else:
-            K = []
-            for c in range(len(F) - 1):
-                p = (F[c] - P[i]) if c == 0 else (F[c] - F[c-1])
-                n = F[c+1] - F[c]
-                if p < n: s = s + p
-                else: K.append(n)
-            K.append(P[i+1] - F[-1])
-            K.sort()
-            K.pop(-1)
-            s = s + sum(K)
-    F = list(filter(lambda x : x >= P[-1], G))
-    F.append(P[-1])
-    s = s + sum_edges(F)
-
-    return s
+    if len(G) == 0: return 0
+    return sum_partial(G, lambda x : x <= P[0]) + sum_inner_partial(P, G) + sum_partial(G, lambda x : x >= P[-1])
 
 def solve(R, B, P):
-    s = sum_edges(P)
-    if len(R) == 0:
-        s = s + sum_partial_edges(P, B)
-    elif len(B) == 0:
-        s = s + sum_partial_edges(P, R)
-    return s
+    return sum_edges(P) + sum_partial_edges(P, R) + sum_partial_edges(P, B)
 
 def runOneIteration(R, B, P, idx, q):
     q.put({idx:solve(R, B, P)})
