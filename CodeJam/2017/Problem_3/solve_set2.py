@@ -6,14 +6,17 @@ from functools import reduce
 def sum_edges(A):
     return sum(reduce(lambda x, y: (sum(x), sum(y)), zip(map(lambda x: -x, A), A[1:]), (0,)))
 
-def sum_partial(A, func):
-    return sum(reduce(lambda x, y: (sum(x), sum(y)), zip(map(lambda x: -x, filter(func, A)), filter(func, A[1:])), (0,)))
+def sum_partial(A, func, val):
+    A = list(filter(func, A))
+    A.append(val)
+    A.sort()
+    return sum(reduce(lambda x, y: (sum(x), sum(y)), zip(map(lambda x: -x, A), A[1:]), (0,)))
 
 def sum_inner_partial(P, G):
     s = 0
     for i, j in zip(P, P[1:]):
         largest = -1
-        priv = -1
+        priv = i
         for f in filter(lambda x : i < x and x < j, G):
             if priv == -1:
                 priv = f
@@ -34,12 +37,15 @@ def sum_inner_partial(P, G):
                     s = s + v
     return s
 
-def sum_partial_edges(P, G):
+def sum_sub_graph(P, G):
     if len(G) == 0: return 0
-    return sum_partial(G, lambda x : x <= P[0]) + sum_inner_partial(P, G) + sum_partial(G, lambda x : x >= P[-1])
+    return sum_partial(G, lambda x : x <= P[0], P[0]) + sum_inner_partial(P, G) + sum_partial(G, lambda x : x >= P[-1], P[-1])
 
 def solve(R, B, P):
-    return sum_edges(P) + sum_partial_edges(P, R) + sum_partial_edges(P, B)
+    if len(P) != 0:
+        return sum_edges(P) + sum_sub_graph(P, R) + sum_sub_graph(P, B)
+    else:
+        return sum_edges(R) + sum_edges(B)
 
 def runOneIteration(R, B, P, idx, q):
     q.put({idx:solve(R, B, P)})
